@@ -25,6 +25,7 @@ class MembersDocument(Document):
     ville=StringField(Required=True)
     receipt_url=URLField(required=True)
     adhesion_name=StringField(required=True)
+    sync=BooleanField(required=True)
 
 
     def toJson(self):
