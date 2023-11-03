@@ -22,6 +22,7 @@ class MembersDocument(Document):
     ecreadys_site_web_authorized=BooleanField(required=True)
     phone=StringField(required=True)
     payment=FloatField(required=True)
+    ville=StringField(Required=True)
     receipt_url=URLField(required=True)
     adhesion_name=StringField(required=True)
 
