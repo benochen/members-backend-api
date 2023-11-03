@@ -47,7 +47,7 @@ class mongo_repository:
         logger.debug("members_repository loaded")
         res=members_repository.findAll()
         logger.debug(f"end find_all with res={res}")
-        members=Transformers.transform_document_list_to_dict(res)
+        self.members=Transformers.transform_document_list_to_dict(res)
         logger.debug(res)
         member=dict()
 
