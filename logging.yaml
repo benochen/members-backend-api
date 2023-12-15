@@ -45,7 +45,7 @@ handlers:
   json_security:
     class: logging.FileHandler
     formatter: custom_json
-    filename: /var/logs/security.json
+    filename: /var/logs/api/security.json
 
 loggers:
   uvicorn.error:
