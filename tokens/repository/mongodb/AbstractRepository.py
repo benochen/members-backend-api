@@ -33,9 +33,7 @@ class AbstractRepository():
         pass
 
     def open_connect(self,)->T:
-        logger.debug("open connection to db="+self.db+";alias="+self.alias+";host="+self.host+";port="+self.port)
         return mongoengine.connect(self.db,alias=self.alias,host=self.connection_string)
 
     def close_mongo_connect(self)->None:
         mongoengine.disconnect(alias=self.alias)
-        logger.debug("Close connection with alias=" + self.alias)

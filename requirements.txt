@@ -4,3 +4,5 @@ mongoengine
 requests
 urllib3
 uvicorn
+yaml-config
+python-json-logger

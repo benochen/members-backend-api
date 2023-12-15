@@ -1,5 +1,7 @@
+import logzero
 from fastapi import FastAPI,Response,status,Request
-from logzero import logger
+import logging
+from logging import config
 from tokens.repository.membership.mockup_repository import mockup_repository
 from tokens.repository.membership.mongo_repository import mongo_repository
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,6 +10,7 @@ from tools.config_parser import config_parser
 from tools.transformers.transformers import Transformers
 from filters.authorization_filter import authorization_filter
 import exceptions
+import uuid
 app = FastAPI()
 
 
@@ -21,6 +24,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+server_logger = logging.getLogger("api")
 @app.get("/my-first-api")
 def hello(name: str):
   return {'Hello ' + name + '!'}
@@ -29,17 +34,26 @@ def hello(name: str):
 @app.get("/membership/members")
 def get_members(request:Request,response:Response):
     response_body=dict()
+    test="var"
+    context = {
+        "request": request,
+        "uuid":uuid.uuid4()
+    }
+
+
     try:
-        auth_filter=authorization_filter(request)
+        auth_filter=authorization_filter(context)
         auth_filter.authorized()
+        context["user"]=auth_filter.get_user_info()
         members=list()
         config="./config.ini"
         config_p = config_parser(config)
-        member_rep=mongo_repository(config_p.parse_config_mongo(),"adhesion-2023-2024")
+        member_rep=mongo_repository(config_p.parse_config_mongo(),"adhesion-2023-2024",context)
         members=member_rep.find_all()
 
         response_body["data"]=members
         response_body["status"]=status.HTTP_200_OK
+        server_logger.info("Returning successfull response",extra={"context":context,"response_code":200})
     except authorization_exception as e:
         response.status_code=status.HTTP_401_UNAUTHORIZED
         response_body["data"]=e.message

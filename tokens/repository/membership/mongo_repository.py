@@ -4,13 +4,14 @@ from tools.transformers.transformers import Transformers
 from tokens.repository.mongodb.MembersRepository import MembersRepository
 class mongo_repository:
 
-    def __init__(self,config_mongo,form_slug):
+    def __init__(self,config_mongo,form_slug,context=None):
         self.members=list()
         self.config_mongo = config_mongo
         self.form_slug=form_slug
         self.db=config_mongo["mongo_db"]
         self.host=config_mongo["mongo_host"]
         self.port=config_mongo["mongo_port"]
+        self.context=context
     def find_all_mockup(self):
         member=dict()
         logger.debug("finall_mockup")
@@ -42,13 +43,9 @@ class mongo_repository:
         return self.members
 
     def find_all(self):
-        logger.debug("Find_all")
-        members_repository=MembersRepository(host=self.host,port=self.port,db=self.db)
-        logger.debug("members_repository loaded")
+        members_repository=MembersRepository(host=self.host,port=self.port,db=self.db,context=self.context)
         res=members_repository.findAll()
-        logger.debug(f"end find_all with res={res}")
         self.members=Transformers.transform_document_list_to_dict(res)
-        logger.debug(res)
         member=dict()
 
 
