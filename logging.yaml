@@ -1,0 +1,76 @@
+version: 1
+disable_existing_loggers: False
+formatters:
+  default:
+    # "()": uvicorn.logging.DefaultFormatter
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  access:
+    # "()": uvicorn.logging.AccessFormatter
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  custom_json:
+    format:  '%(asctime)s %(name)s %(levelname) %(message)s %(client_ip)s %(call_url)s %(user)s %(filename)s %(funcName)s %(lineno)s '
+    class: tools.loggers.customjsonformatter.CustomJsonFormatter
+  simple_json:
+    format: '%(asctime)s %(name)s %(levelname) %(message)s  %(filename)s %(funcName)s  %(lineno)s '
+    class: pythonjsonlogger.jsonlogger.JsonFormatter
+handlers:
+  default:
+    formatter: default
+    class: logging.StreamHandler
+    stream: ext://sys.stderr
+  access:
+    formatter: access
+    class: logging.StreamHandler
+    stream: ext://sys.stdout
+  screen:
+    formatter: custom_json
+    class: logging.StreamHandler
+    stream: ext://sys.stdout
+  screen_simple_json:
+    formatter: simple_json
+    class: logging.StreamHandler
+    stream: ext://sys.stdout
+  json_access_log:
+    class: logging.FileHandler
+    formatter: simple_json
+    filename: /var/logs/api/access.log
+  json_server_status_log:
+    class: logging.FileHandler
+    formatter: simple_json
+    filename: /var/logs/api/status.log
+  json_server:
+    class: logging.FileHandler
+    formatter: custom_json
+    filename: /var/logs/api/api.json
+  json_security:
+    class: logging.FileHandler
+    formatter: custom_json
+    filename: /var/logs/security.json
+
+loggers:
+  uvicorn.error:
+    level: INFO
+    handlers:
+      - json_server_status_log
+      - screen_simple_json
+    propagate: no
+  uvicorn.access:
+    level: INFO
+    handlers:
+      - json_access_log
+    propagate: no
+  security:
+    level: INFO
+    handlers:
+      - json_security
+      - screen
+  api:
+    level: DEBUG
+    handlers:
+      - json_server
+      - screen
+root:
+  level: DEBUG
+  handlers:
+    - screen_simple_json
+  propagate: no
