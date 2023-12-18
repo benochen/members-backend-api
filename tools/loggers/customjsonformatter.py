@@ -19,6 +19,10 @@ class CustomJsonFormatter(jsonlogger.JsonFormatter):
                     log_record["uuid"]=context.get("uuid")
                 else:
                     log_record["uid"]="N/A"
+                if context.get("event_sec_type"):
+                    log_record["event_sec_type"]=context.get("event_sec_type")
+                else:
+                    log_record["event_sec_type"]="N/A"
                 log_record.pop("context")
         except Exception as e:
             traceback.print_exc()
