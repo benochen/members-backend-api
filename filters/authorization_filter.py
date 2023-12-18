@@ -22,6 +22,7 @@ class authorization_filter:
         self.authorized_org="asso.ecreadys.fr"
 
     def authorized(self):
+
         server_logger.info("Start authorization process",extra={"context":self.context})
         server_logger.debug("Check if authorization header is present",extra={"context":self.context})
         if not self._check_authorization_exists():
@@ -44,7 +45,8 @@ class authorization_filter:
         server_logger.info(f"User belongs to {self.authorized_org}",extra={"context":self.context})
         self.context={
             "request":self.request,
-            "user":self.user_info
+            "user":self.user_info,
+            "sec_event_type": "AUTHENTICATION"
         }
         server_logger.info("Authentication successfull",extra={"context":self.context})
         logger.info(f"Authentication successfull",extra={"context":self.context})
