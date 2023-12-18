@@ -46,7 +46,7 @@ class authorization_filter:
         self.context={
             "request":self.request,
             "user":self.user_info,
-            "sec_event_type": "AUTHENTICATION"
+            "event_sec_type": "AUTHENTICATION"
         }
         server_logger.info("Authentication successfull",extra={"context":self.context})
         logger.info(f"Authentication successfull",extra={"context":self.context})
