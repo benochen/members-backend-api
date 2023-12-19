@@ -15,11 +15,9 @@ class authorization_exception(Exception):
 
     def log_security(self,message,context:dict="test"):
         try:
-            print(context)
             event_type=dict()
             event_type["event_sec_type"]="AUTHENTICATION"
             context.update(event_type)
-            print(context)
             logger.error(message,extra={"context": context})
         except Exception as e:
             traceback.print_exc()
