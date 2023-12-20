@@ -4,7 +4,7 @@ from logging.config import fileConfig
 from fastapi import Request, Response, HTTPException
 from slowapi.errors import  RateLimitExceeded
 from starlette.responses import JSONResponse
-
+from tools.RequestParser import get_real_ip
 logger = logging.getLogger("security")  # the __name__ resolve to "uicheckapp.services"
                                       # This will load the uicheckapp logger
 
@@ -14,6 +14,8 @@ def _rate_limit(request: Request, exc: RateLimitExceeded) -> Response:
     context=dict()
     context["request"]=request
     context["event_sec_type"]="RATE_LIMLITNG_EXCEED"
+    context["client_ip"]=get_real_ip(request)
+
 
 
     log_security(f"Too much request : {exc.detail}",context)

@@ -15,7 +15,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from exceptions.Rate_limit_exception import _rate_limit
-from tools.RequestParser import get_all_headers
+from tools.RequestParser import get_real_ip,get_all_headers
 app = FastAPI()
 limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
@@ -41,11 +41,13 @@ def hello(name: str):
 @limiter.limit("5/minute")
 def get_members(request:Request,response:Response):
     get_all_headers(request)
+    real_ip=get_real_ip(request)
     response_body=dict()
     test="var"
     context = {
         "request": request,
-        "uuid":uuid.uuid4()
+        "uuid":uuid.uuid4(),
+        "client_ip":real_ip
     }
 
 

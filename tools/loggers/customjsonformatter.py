@@ -23,6 +23,10 @@ class CustomJsonFormatter(jsonlogger.JsonFormatter):
                     log_record["event_sec_type"]=context.get("event_sec_type")
                 else:
                     log_record["event_sec_type"]="N/A"
+                if context.get("client_ip"):
+                    log_record["client_ip"]=context.get("client_ip")
+                else:
+                    log_record["client_ip"]="N/A"
                 log_record.pop("context")
         except Exception as e:
             traceback.print_exc()
@@ -43,8 +47,6 @@ class CustomJsonFormatter(jsonlogger.JsonFormatter):
 
     def parse_request(self, request):
         request_dict = dict()
-        if request.client.host:
-            request_dict["client_ip"] = request.client.host
         if request.url:
             request_dict["call_url"]=request.url
         return request_dict
