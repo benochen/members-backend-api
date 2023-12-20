@@ -15,6 +15,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from exceptions.Rate_limit_exception import _rate_limit
+from tools.RequestParser import get_all_headers
 app = FastAPI()
 limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
@@ -39,6 +40,7 @@ def hello(name: str):
 @app.get("/membership/members")
 @limiter.limit("5/minute")
 def get_members(request:Request,response:Response):
+    get_all_headers(request)
     response_body=dict()
     test="var"
     context = {
@@ -48,6 +50,7 @@ def get_members(request:Request,response:Response):
 
 
     try:
+
         auth_filter=authorization_filter(context)
         auth_filter.authorized()
         context["user"]=auth_filter.get_user_info()
